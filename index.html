@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fortune Teller 🔮</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  color: #F1F5F9;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #020617, #000);
+}
+
+/* STAR BACKGROUND */
+.stars {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: transparent url('https://www.transparenttextures.com/patterns/stardust.png');
+  animation: moveStars 60s linear infinite;
+  z-index: -2;
+}
+
+@keyframes moveStars {
+  from { background-position: 0 0; }
+  to { background-position: 1000px 1000px; }
+}
+
+/* PARTICLES */
+.particle {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  background: #C084FC;
+  border-radius: 50%;
+  animation: floatUp 10s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(100vh); }
+  to { transform: translateY(-10vh); }
+}
+
+.container {
+  width: 90%;
+  max-width: 480px;
+  text-align: center;
+  z-index: 2;
+}
+
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 34px;
+  color: #F472B6;
+  text-shadow: 0 0 20px rgba(236,72,153,0.9);
+}
+
+.card {
+  background: rgba(15,23,42,0.65);
+  backdrop-filter: blur(14px);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(168,85,247,0.5);
+}
+
+/* CRYSTAL BALL */
+.ball {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 15px;
+  border-radius: 50%;
+  background: radial-gradient(circle,#C084FC,#6D28D9);
+  box-shadow: 0 0 30px rgba(192,132,252,0.9);
+  animation: pulseBall 3s infinite;
+}
+
+@keyframes pulseBall {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* TEXTAREA */
+textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #0F172A;
+  color: white;
+  margin-bottom: 1rem;
+  outline: none;
+  resize: vertical;
+}
+
+textarea:focus {
+  box-shadow: 0 0 15px #C084FC;
+}
+
+/* BUTTON */
+button {
+  background: linear-gradient(90deg,#EC4899,#A855F7,#8B5CF6);
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  animation: pulseBtn 2.5s infinite;
+}
+
+@keyframes pulseBtn {
+  0%,100% { box-shadow: 0 0 10px rgba(236,72,153,0.6); }
+  50% { box-shadow: 0 0 25px rgba(236,72,153,1); }
+}
+
+/* TAROT CARD */
+.cardFlip {
+  perspective: 1000px;
+  margin-top: 20px;
+}
+
+.flipInner {
+  position: relative;
+  width: 100%;
+  min-height: 220px;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flipInner.flip {
+  transform: rotateY(180deg);
+}
+
+.flipFront, .flipBack {
+  position: absolute;
+  width: 100%;
+  min-height: 220px;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.flipFront {
+  background: linear-gradient(#6D28D9,#A855F7);
+  font-size: 40px;
+}
+
+.flipBack {
+  transform: rotateY(180deg);
+  flex-direction: column;
+  gap: 15px;
+}
+
+.result {
+  font-size: 32px;
+  font-weight: bold;
+  text-shadow: 0 0 15px rgba(168,85,247,1);
+}
+
+img {
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+/* FADE IN */
+.fadeIn {
+  animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.note {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #CBD5F5;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="stars"></div>
+
+<div class="container">
+  <h1>🔮 Fortune Teller</h1>
+
+  <div class="card">
+
+```
+<div class="ball"></div>
+
+<textarea id="question" placeholder="Whisper your question..."></textarea>
+<button onclick="askDecision()">Reveal Fate</button>
+
+<div class="cardFlip">
+  <div class="flipInner" id="flipCard">
+    <div class="flipFront">🃏</div>
+    <div class="flipBack">
+      <div class="result" id="answer"></div>
+      <img id="gif">
+    </div>
+  </div>
+</div>
+
+<div class="note">Answers are mystical and only appear as YES or NO ✨</div>
+```
+
+  </div>
+</div>
+
+<audio id="sound" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
+<script>
+const input = document.getElementById("question");
+const answerEl = document.getElementById("answer");
+const gifEl = document.getElementById("gif");
+const flipCard = document.getElementById("flipCard");
+const sound = document.getElementById("sound");
+
+/* PARTICLES */
+for (let i=0;i<20;i++){
+  let p=document.createElement("div");
+  p.className="particle";
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=(8+Math.random()*5)+"s";
+  document.body.appendChild(p);
+}
+
+/* CURSOR SPARKLE */
+document.addEventListener("mousemove", e=>{
+  const spark=document.createElement("div");
+  spark.style.position="fixed";
+  spark.style.left=e.clientX+"px";
+  spark.style.top=e.clientY+"px";
+  spark.style.width="6px";
+  spark.style.height="6px";
+  spark.style.background="#F472B6";
+  spark.style.borderRadius="50%";
+  spark.style.pointerEvents="none";
+  spark.style.boxShadow="0 0 10px #F472B6";
+  document.body.appendChild(spark);
+  setTimeout(()=>spark.remove(),500);
+});
+
+async function askDecision(){
+  if(!input.value.trim()){
+    answerEl.textContent="Ask something 🔮";
+    return;
+  }
+
+  flipCard.classList.remove("flip");
+
+  const res=await fetch("https://yesno.wtf/api");
+  const data=await res.json();
+
+  answerEl.textContent=data.answer;
+  gifEl.src=data.image;
+  answerEl.classList.add("fadeIn");
+  gifEl.classList.add("fadeIn");
+
+  setTimeout(()=>flipCard.classList.add("flip"),200);
+
+  sound.currentTime=0;
+  sound.play();
+}
+</script>
+
+</body>
+</html>
